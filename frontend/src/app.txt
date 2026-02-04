@@ -1,0 +1,543 @@
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { MdModeEditOutline, MdOutlineDone } from "react-icons/md";
+import { FaTrash } from "react-icons/fa6";
+import { IoClose } from "react-icons/io5";
+import { API_URL } from "./api.js";
+
+function App() {
+  // create state for all 11 employee details
+  const [employee_code, setEmployee_code] = useState("");
+  const [first_name, setfirst_name] = useState("");
+  const [last_name, setlast_name] = useState("");
+  const [email, setemail] = useState("");
+  const [phone_number, setphone_number] = useState("");
+  const [date_of_birth, setdate_of_birth] = useState("");
+  const [date_of_joining, setdate_of_joining] = useState("");
+  const [department, setdepartment] = useState("");
+  const [designation, setdesignation] = useState("");
+  const [reporting_manager_id, setreporting_manager_id] = useState("");
+  const [status, setstatus] = useState("");
+
+  const [todos, setTodos] = useState([]);
+  const [editingTodo, setEditingTodo] = useState(null);
+
+  // create state for all 11 employee editdetails
+  const [editedEmployee_code, setEditedEmployee_code] = useState("");
+  const [editedfirst_name, setEditedfirst_name] = useState("");
+  const [editedlast_name, setEditedlast_name] = useState("");
+  const [editedemail, setEditedemail] = useState("");
+  const [editedphone_number, setEditedphone_number] = useState("");
+  const [editeddate_of_birth, setEditeddate_of_birth] = useState("");
+  const [editeddate_of_joining, setEditeddate_of_joining] = useState("");
+  const [editeddepartment, setEditeddepartment] = useState("");
+  const [editeddesignation, setEditeddesignation] = useState("");
+  const [editedreporting_manager_id, setEditedreporting_manager_id] = useState("");
+  const [editedstatus, setEditedstatus] = useState("");
+
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const getTodos = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const res = await axios.get(`${API_URL}/todos`);
+      setTodos(res.data);
+      console.log(res.data);
+    } catch (err) {
+      console.error(err.message);
+      setError("Failed to fetch details. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getTodos();
+  }, []);
+
+  const onSubmitForm = async (e) => {
+    e.preventDefault();
+    // if (!description.trim()) return;
+    try {
+      setError(null);
+      const res = await axios.post(`${API_URL}/todos`, {
+        //create for all emp details
+        employee_code: employee_code.trim(),
+        first_name: first_name.trim(),
+        last_name: last_code.trim(),
+        email: email.trim(),
+        phone_number: phone_number.trim(),
+        date_of_birth: date_of_birth.trim(),
+        date_of_joining: date_of_joining.trim(),
+        department: department.trim(),
+        designation: designation.trim(),
+        reporting_manager_id: reporting_manager_id.trim(),
+        status: status.trim(),
+
+      });
+      setTodos([...todos, res.data]);
+      setEmployee_code("");
+      setEditedfirst_name("");
+      setEditedlast_name("");
+      setEditedemail("");
+      setEditedphone_number("");
+      setEditeddate_of_birth("");
+      setEditeddate_of_joining("");
+      setEditeddepartment("");
+      setEditeddesignation("");
+      setEditedreporting_manager_id("");
+      setEditedstatus("");
+    } catch (err) {
+      console.error(err.message);
+      setError("Failed to add details. Please try again.");
+    }
+  };
+
+  const saveEdit = async (employee_id) => {
+    try {
+      setError(null);
+
+      const currentTodo = todos.find((todo) => todo.employee_id === employee_id);
+
+      // create all emp details start
+      const trimmedEmpCode = editedEmployee_code.trim();
+      if (currentTodo.employee_code === trimmedEmpCode) {
+        setEditingTodo(null);
+        setEditedEmployee_code("");
+        return;
+      }
+      const trimmedFN = editedfirst_name.trim();
+      if (currentTodo.first_name === trimmedFN) {
+        setEditingTodo(null);
+        setEditedfirst_name("");
+        return;
+      }const trimmedLN = editedlast_name.trim();
+      if (currentTodo.last_name === trimmedLN) {
+        setEditingTodo(null);
+        setEditedlast_name("");
+        return;
+      }const trimmedemail = editedemail.trim();
+      if (currentTodo.email === trimmedemail) {
+        setEditingTodo(null);
+        setEditedemail("");
+        return;
+      }const trimmedPN = editedphone_number.trim();
+      if (currentTodo.phone_number === trimmedPN) {
+        setEditingTodo(null);
+        setEditedphone_number("");
+        return;
+      }const trimmedDoB = editeddate_of_birth.trim();
+      if (currentTodo.date_of_birth === trimmedDoB) {
+        setEditingTodo(null);
+        setEditeddate_of_birth("");
+        return;
+      }const trimmedDoJ = editeddate_of_joining.trim();
+      if (currentTodo.date_of_joining === trimmedDoJ) {
+        setEditingTodo(null);
+        setEditeddate_of_joining("");
+        return;
+      }const trimmedDPT = editeddepartment.trim();
+      if (currentTodo.department === trimmedDPT) {
+        setEditingTodo(null);
+        setEditeddepartment("");
+        return;
+      }const trimmedDSGN = editeddesignation.trim();
+      if (currentTodo.designation === trimmedDSGN) {
+        setEditingTodo(null);
+        setEditeddesignation("");
+        return;
+      }const trimmedRMI = editedreporting_manager_id.trim();
+      if (currentTodo.reporting_manager_id === trimmedRMI) {
+        setEditingTodo(null);
+        setEditedreporting_manager_id("");
+        return;
+      }const trimmedstatus = editedstatus.trim();
+      if (currentTodo.status === trimmedstatus) {
+        setEditingTodo(null);
+        setEditedstatus("");
+        return;
+      }
+      //end
+
+
+      await axios.put(`${API_URL}/todos/${employee_id}`, {
+        //create 10 details
+        employee_code: trimmedEmpCode,
+        first_name: trimmedFN,
+        last_name: trimmedLN,
+        email: trimmedemail,
+        phone_number: trimmedPN,
+        date_of_birth: trimmedDoB,
+        date_of_joining: trimmedDoJ,
+        department: trimmedDPT,
+        designation: trimmedDSGN,
+        reporting_manager_id: trimmedRMI,
+        status: trimmedstatus,
+
+      });
+      setEditingTodo(null);
+      
+      //create 10
+      setEditedEmployee_code("");
+      setEditedfirst_name("");
+      setEditedlast_name("");
+      setEditedemail("");
+      setEditedphone_number("");
+      setEditeddate_of_birth("");
+      setEditeddate_of_joining("");
+      setEditeddepartment("");
+      setEditeddesignation("");
+      setEditedreporting_manager_id("");
+      setEditedstatus("");
+
+      setTodos(
+        todos.map((todo) =>
+          todo.employee_id === employee_id
+            ? { ...todo, employee_code: trimmedEmpCode, 
+              //remaining 10 details
+              first_name: trimmedFN,
+              last_name: trimmedLN,
+              email: trimmedemail,
+              phone_number: trimmedPN,
+              date_of_birth: trimmedDoB,
+              date_of_joining: trimmedDoJ,
+              department: trimmedDPT,
+              designation: trimmedDSGN,
+              reporting_manager_id: trimmedRMI,
+              status: trimmedstatus
+             }
+            : todo
+        )
+      );
+    } catch (err) {
+      console.error(err.message);
+      setError("Failed to update todo. Please try again.");
+    }
+  };
+
+  const deleteTodo = async (employee_id) => {
+    try {
+      setError(null);
+      await axios.delete(`${API_URL}/todos/${employee_id}`);
+      setTodos(todos.filter((todo) => todo.employee_id !== employee_id));
+    } catch (err) {
+      console.error(err.message);
+      setError("Failed to delete details. Please try again.");
+    }
+  };
+
+  const toggleCompleted = async (employee_id) => {
+    try {
+      setError(null);
+      const todo = todos.find((todo) => todo.employee_id === employee_id);
+      await axios.put(`${API_URL}/todos/${employee_id}`, {
+        employee_code: todo.employee_code,
+        //remaining 10
+        first_name: todo.first_name,
+              last_name: todo.last_name,
+              email: todo.email,
+              phone_number:todo.phone_number,
+              date_of_birth:todo.date_of_birth,
+              date_of_joining: todo.date_of_joining,
+              department: todo.department,
+              designation: todo.designation,
+              reporting_manager_id: todo.reporting_manager_id,
+              status: todo.status
+
+      });
+      // setTodos(
+      //   todos.map((todo) =>
+      //     todo.employee_id === employee_id ? { ...todo, completed: !todo.completed } : todo
+      //   )
+      // );
+    } catch (err) {
+      console.error(err.message);
+      setError("Failed to update details. Please try again.");
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-800 flex justify-center items-center p-4">
+      <div className="bg-gray-50 rounded-2xl shadow-xl w-full max-w-lg p-8">
+        <h1 className="text-4xl font-bold text-gray-800 mb-8">EMPLOYEE MANAGEMENT APP</h1>
+        {error && (
+          <div className="bg-red-100 text-red-700 p-3 rounded mb-4">
+            {error}
+          </div>
+        )}
+        <form
+          onSubmit={onSubmitForm}
+          className="flex items-center gap-2 shadow-sm border p-2 rounded-lg mb-6"
+        >
+          {/* 1 */}
+          <input
+            className="flex-1 outline-none px-3 py-2 text-gray-700 placeholder-gray-400"
+            type="text"
+            value={employee_code}
+            onChange={(e) => setEmployee_code(e.target.value)}
+            placeholder="Enter Employee Code"
+            required
+          />
+          {/* 2 */}
+          <input
+            className="flex-1 outline-none px-3 py-2 text-gray-700 placeholder-gray-400"
+            type="text"
+            value={first_name}
+            onChange={(e) => setfirst_name(e.target.value)}
+            placeholder="Enter First name"
+            required
+          />
+          {/* 3 */}
+          <input
+            className="flex-1 outline-none px-3 py-2 text-gray-700 placeholder-gray-400"
+            type="text"
+            value={last_name}
+            onChange={(e) => setlast_name(e.target.value)}
+            placeholder="Enter Last name"
+            required
+          />
+          {/* 4 */}
+          <input
+            className="flex-1 outline-none px-3 py-2 text-gray-700 placeholder-gray-400"
+            type="text"
+            value={email}
+            onChange={(e) => setemail(e.target.value)}
+            placeholder="abc@gmail.com"
+            required
+          />
+          {/* 5 */}
+          <input
+            className="flex-1 outline-none px-3 py-2 text-gray-700 placeholder-gray-400"
+            type="text"
+            value={phone_number}
+            onChange={(e) => setphone_number(e.target.value)}
+            placeholder="9080833172"
+            required
+          />
+          {/* 6 */}
+          <input
+            className="flex-1 outline-none px-3 py-2 text-gray-700 placeholder-gray-400"
+            type="text"
+            value={date_of_birth}
+            onChange={(e) => setdate_of_birth(e.target.value)}
+            placeholder="Enter DoB"
+            required
+          />
+          {/* 7 */}
+          <input
+            className="flex-1 outline-none px-3 py-2 text-gray-700 placeholder-gray-400"
+            type="text"
+            value={date_of_joining}
+            onChange={(e) => setdate_of_joining(e.target.value)}
+            placeholder="DoJ"
+            required
+          />
+          {/* 8 */}
+          <input
+            className="flex-1 outline-none px-3 py-2 text-gray-700 placeholder-gray-400"
+            type="text"
+            value={department}
+            onChange={(e) => setdepartment(e.target.value)}
+            placeholder="Department"
+            required
+          />
+          {/* 9 */}
+          <input
+            className="flex-1 outline-none px-3 py-2 text-gray-700 placeholder-gray-400"
+            type="text"
+            value={designation}
+            onChange={(e) => setdesignation(e.target.value)}
+            placeholder="Designation"
+            required
+          />
+          {/* 10 */}
+          <input
+            className="flex-1 outline-none px-3 py-2 text-gray-700 placeholder-gray-400"
+            type="text"
+            value={reporting_manager_id}
+            onChange={(e) => setreporting_manager_id(e.target.value)}
+            placeholder="Reporting Manager id"
+            required
+          />
+          {/* 11 */}
+          <input
+            className="flex-1 outline-none px-3 py-2 text-gray-700 placeholder-gray-400"
+            type="text"
+            value={status}
+            onChange={(e) => setstatus(e.target.value)}
+            placeholder="status"
+            required
+          />
+        
+          <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md font-medium cursor-pointer">
+            Add Employee
+          </button>
+        </form>
+        <div>
+          {loading ? (
+            <div>
+              <p className="text-gray-600">Loading tasks...</p>
+            </div>
+          ) : todos.length === 0 ? (
+            <p className="text-gray-600">No tasks available. Add a new task!</p>
+          ) : (
+            <div className="flex flex-col gap-y-4">
+              {todos.map((todo) => (
+                <div key={todo.employee_id} className="pb-4">
+                  {editingTodo === todo.employee_id ? (
+                    <div className="flex items-center gap-x-3">
+                      {/* 1 */}
+                      <input
+                        className="flex-1 p-3 border rounded-lg border-gray-200 outline-none focus:ring-2 focus:ring-blue-300 text-gray-700 shadow-inner"
+                        type="text"
+                        value={editedEmployee_code}
+                        onChange={(e) => setEditedEmployee_code(e.target.value)}
+                      />
+                      {/* {2} */}
+                      <input
+                        className="flex-1 p-3 border rounded-lg border-gray-200 outline-none focus:ring-2 focus:ring-blue-300 text-gray-700 shadow-inner"
+                        type="text"
+                        value={first_name}
+                        onChange={(e) => setEditedfirst_name(e.target.value)}
+                      />{/* {3} */}
+                      <input
+                        className="flex-1 p-3 border rounded-lg border-gray-200 outline-none focus:ring-2 focus:ring-blue-300 text-gray-700 shadow-inner"
+                        type="text"
+                        value={last_name}
+                        onChange={(e) => setEditedlast_name(e.target.value)}
+                      />{/* {4} */}
+                      <input
+                        className="flex-1 p-3 border rounded-lg border-gray-200 outline-none focus:ring-2 focus:ring-blue-300 text-gray-700 shadow-inner"
+                        type="text"
+                        value={editedemail}
+                        onChange={(e) => setEditedemail(e.target.value)}
+                      />{/* {5} */}
+                      <input
+                        className="flex-1 p-3 border rounded-lg border-gray-200 outline-none focus:ring-2 focus:ring-blue-300 text-gray-700 shadow-inner"
+                        type="text"
+                        value={editedphone_number}
+                        onChange={(e) => setEditedphone_number(e.target.value)}
+                      />{/* {6} */}
+                      <input
+                        className="flex-1 p-3 border rounded-lg border-gray-200 outline-none focus:ring-2 focus:ring-blue-300 text-gray-700 shadow-inner"
+                        type="text"
+                        value={editeddate_of_birth}
+                        onChange={(e) => setEditeddate_of_birth(e.target.value)}
+                      />{/* {7} */}
+                      <input
+                        className="flex-1 p-3 border rounded-lg border-gray-200 outline-none focus:ring-2 focus:ring-blue-300 text-gray-700 shadow-inner"
+                        type="text"
+                        value={editeddate_of_joining}
+                        onChange={(e) => setEditeddate_of_joining(e.target.value)}
+                      />{/* {8} */}
+                      <input
+                        className="flex-1 p-3 border rounded-lg border-gray-200 outline-none focus:ring-2 focus:ring-blue-300 text-gray-700 shadow-inner"
+                        type="text"
+                        value={editeddepartment}
+                        onChange={(e) => setEditeddepartment(e.target.value)}
+                      />{/* {9} */}
+                      <input
+                        className="flex-1 p-3 border rounded-lg border-gray-200 outline-none focus:ring-2 focus:ring-blue-300 text-gray-700 shadow-inner"
+                        type="text"
+                        value={editeddesignation}
+                        onChange={(e) => setEditeddesignation(e.target.value)}
+                      />{/* {10} */}
+                      <input
+                        className="flex-1 p-3 border rounded-lg border-gray-200 outline-none focus:ring-2 focus:ring-blue-300 text-gray-700 shadow-inner"
+                        type="text"
+                        value={editedreporting_manager_id}
+                        onChange={(e) => setEditedreporting_manager_id(e.target.value)}
+                      />{/* {11} */}
+                      <input
+                        className="flex-1 p-3 border rounded-lg border-gray-200 outline-none focus:ring-2 focus:ring-blue-300 text-gray-700 shadow-inner"
+                        type="text"
+                        value={editedstatus}
+                        onChange={(e) => setEditedstatus(e.target.value)}
+                      />{/* {12} */}
+                    
+                      {/* 10 inputs need to added */}
+                      <div>
+                        <button
+                          onClick={() => saveEdit(todo.employee_id)}
+                          className="px-4 py-2 bg-green-500 text-white rounded-lg mr-2 mt-2 hover:bg-green-600 duration-200"
+                        >
+                          <MdOutlineDone />
+                        </button>
+                        <button
+                          onClick={() => setEditingTodo(null)}
+                          className="px-4 py-2 bg-gray-500 text-white rounded-lg mt-2 hover:bg-gray-600 duration-200"
+                        >
+                          <IoClose />
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex justify-between items-center">
+                      <div className="flex items-center gap-x-4 overflow-hidden">
+                        <button
+                          onClick={() => toggleCompleted(todo.employee_id)}
+                          className={`flex-shrink-0 h-6 w-6 border-2 rounded-full flex items-center justify-center ${
+                            todo.completed
+                              ? "bg-green-500 border-green-500 text-white"
+                              : "border-gray-300 hover:border-blue-400"
+                          }`}
+                        >
+                          {/* {todo.completed && <MdOutlineDone size={16} />} */}
+                        </button>
+                        <span>{todo.employee_code}</span>
+                        <span>{todo.first_name}</span>
+                        <span>{todo.last_name}</span>
+                        <span>{todo.email}</span>
+                        <span>{todo.phone_numbere}</span>
+                        <span>{todo.date_of_birth}</span>
+                        <span>{todo.date_of_joining}</span>
+                        <span>{todo.department}</span>
+                        <span>{todo.designation}</span>
+                        <span>{todo.reporting_manager_id}</span>
+                        <span>{todo.status}</span>
+                        {/* create 10 */}
+                      </div>
+                      <div className="flex gap-x-2">
+                        <button
+                          onClick={() => {
+                            setEditingTodo(todo.emloyee_id);
+                            setEditedEmployee_code(todo.employee_code);
+                            setEditedfirst_name(todo.first_name);
+                            setEditedlast_name(todo.last_name);
+                            setEditedemail(todo.email);
+                            setEditedphone_number(todo.phone_number);
+                            setEditeddate_of_birth(todo.date_of_birth);
+                            setEditeddate_of_joining(todo.date_of_joining);
+                            setEditeddepartment(todo.department);
+                            setEditeddesignation(todo.designation);
+                            setEditedreporting_manager_id(todo.reporting_manager_id);
+                            setEditedstatus(todo.status);
+                            // remaining 10
+                          }}
+                          className="p-2 text-blue-500 hover:text-blue-700 rounded-lg hover:bg-blue-50 duration-200"
+                        >
+                          <MdModeEditOutline />
+                        </button>
+                        <button
+                          onClick={() => deleteTodo(todo.emloyee_id)}
+                          className="p-2 text-red-500 hover:text-red-700 rounded-lg hover:bg-red-50 duration-200"
+                        >
+                          <FaTrash />
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default App;

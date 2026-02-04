@@ -15,4 +15,5 @@ If you are developing a production application, we recommend using TypeScript wi
 A full-stack web application built using the PERN stack. React is used for the client-side UI, ensuring smooth user interaction and state management. Node.js and Express.js power the backend, enabling efficient API handling and server-side operations. PostgreSQL is integrated for managing relational data with optimized queries. The project demonstrates CRUD functionality, REST API design, and clean separation between frontend and backend layers.
 
 Tech Stack: React.js, Node.js, Express.js, PostgreSQL
+
 Features: CRUD operations, REST APIs, database integration, responsive UI
